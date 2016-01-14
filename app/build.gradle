@@ -10,6 +10,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -17,6 +18,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+repositories {
+    maven { url 'https://repo.eclipse.org/content/repositories/paho-releases/' }
+    mavenCentral()
 }
 
 dependencies {
@@ -36,6 +42,13 @@ dependencies {
     compile "com.android.support.test.espresso:espresso-idling-resource:$rootProject.ext.espressoVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterKnifeVersion"
     compile "com.squareup.retrofit:retrofit:$rootProject.retrofitVersion"
+
+    compile project(':broker')
+
+    androidTestCompile 'io.reactivex:rxandroid:1.1.0'
+// Because RxAndroid releases are few and far between, it is recommended you also
+// explicitly depend on RxJava's latest version for bug fixes and new features.
+    androidTestCompile 'io.reactivex:rxjava:1.1.0'
 
 
     // Dependencies for local unit tests

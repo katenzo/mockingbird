@@ -7,38 +7,40 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.katenzo.mockingbird.MainActivity">
+    tools:context=".MqttActivity">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Show Image"
-        android:id="@+id/ShowImagebutton" />
+        android:text="Publish"
+        android:id="@+id/publishButton"
+        android:layout_alignTop="@+id/messagePublishText"
+        android:layout_toEndOf="@+id/messagePublishText" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Friends"
-        android:id="@+id/getFriendsButton"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+
 
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:id="@+id/editText"
-        android:layout_below="@+id/getFriendsButton"
-        android:layout_toLeftOf="@+id/getFriendsButton"
-        android:layout_toStartOf="@+id/getFriendsButton"
-        android:layout_marginTop="104dp" />
+        android:id="@+id/messagePublishText"
+         />
 
-    <om.facebook.drawee.view.SimpleDraweeView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/ShowImagebutton"
-        android:layout_toEndOf="@+id/ShowImagebutton" />
+        android:ems="10"
+        android:id="@+id/messageSubscribeText"
+        android:layout_below="@+id/messagePublishText"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/errorTxt"
+        android:layout_below="@+id/messageSubscribeText"
+        android:layout_alignParentStart="true" />
+
+
 </RelativeLayout>

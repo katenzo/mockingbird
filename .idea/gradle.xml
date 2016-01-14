@@ -10,6 +10,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/broker" />
+            <option value="$PROJECT_DIR$/netty_parser" />
+            <option value="$PROJECT_DIR$/parser_commons" />
           </set>
         </option>
       </GradleProjectSettings>
