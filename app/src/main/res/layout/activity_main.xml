@@ -9,22 +9,11 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MqttActivity">
 
-    <Button
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Publish"
-        android:id="@+id/publishButton"
-        android:layout_alignTop="@+id/messagePublishText"
-        android:layout_toEndOf="@+id/messagePublishText" />
-
-
-
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/messagePublishText"
+        android:id="@+id/captionText"
+        android:text="Subscribe:"
          />
 
     <TextView
@@ -32,7 +21,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:id="@+id/messageSubscribeText"
-        android:layout_below="@+id/messagePublishText"
+        android:layout_below="@+id/captionText"
         android:layout_alignParentStart="true" />
 
     <TextView

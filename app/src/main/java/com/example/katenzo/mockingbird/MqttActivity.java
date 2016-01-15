@@ -3,7 +3,6 @@ package com.example.katenzo.mockingbird;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -23,9 +22,6 @@ public class MqttActivity extends AppCompatActivity {
 
     private MqttClient mqttClientSubscribe;
 
-    @Bind(R.id.messagePublishText)
-    EditText messagePublish;
-
     @Bind(R.id.messageSubscribeText)
     TextView messageSubscribe;
 
@@ -39,9 +35,7 @@ public class MqttActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initSubscribeClient();
-
     }
-
 
     private void initSubscribeClient() {
         try {
@@ -63,11 +57,11 @@ public class MqttActivity extends AppCompatActivity {
                 @Override
                 public void messageArrived(String s, final MqttMessage mqttMessage) throws Exception {
 
-                    messageSubscribe.postDelayed(new Runnable() {
+                    messageSubscribe.post(new Runnable() {
                         public void run() {
                             messageSubscribe.setText(mqttMessage.toString());
                         }
-                    }, 100);
+                    });
 
                 }
 
@@ -85,18 +79,17 @@ public class MqttActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         try {
-            mqttClientSubscribe.disconnect();
+            if (mqttClientSubscribe.isConnected()) {
+                mqttClientSubscribe.disconnect();
+            }
         } catch (MqttException e) {
             e.printStackTrace();
         }
 
         super.onDestroy();
     }
-
-
 
 }

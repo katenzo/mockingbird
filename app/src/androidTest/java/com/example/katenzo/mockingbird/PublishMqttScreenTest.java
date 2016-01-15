@@ -13,14 +13,15 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,60 +41,40 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 @LargeTest
 
 public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<MqttActivity> {
+    private static final String LOG_TAG = "mockTest";
     private static final String STRING_TO_BE_TYPED = "Publish Mqtt";
     private static final String MQTT_SERVER = "tcp://localhost:1883";
 
     private MqttActivity activity;
-    private Server mqttServer;
+    private static Server mqttServer;
 
-    private MqttClient mqttClientPublisher;
-    private MqttAsyncClient mqttAsyncClient;
     private MqttAsyncClient mqttAsyncClientSignal;
-    private boolean done;
 
     public PublishMqttScreenTest() {
         super(MqttActivity.class);
     }
 
 
+    @BeforeClass
+    public static void setUpBeforeClass() throws  Exception{
+       try {
+           mqttServer = new Server();
+           Log.i(LOG_TAG, "Start Server");
+           mqttServer.startServer();
+       } catch (RuntimeException e) {
+           Log.e(LOG_TAG, " Start Server mqtt " + e.getMessage(), e);
+       }
+    }
+
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
 
-        mqttServer = new Server();
-        mqttServer.startServer();
-
         injectInstrumentation(InstrumentationRegistry.getInstrumentation());
         activity = getActivity();
 
-        initPublishClient();
-        initAsyncClient();
         initSignalClient();
-
-    }
-
-
-
-    private void initPublishClient() {
-        try {
-            MqttClientPersistence mqttClientPersistence = new MqttDefaultFilePersistence(activity.getDir("test1", Activity.MODE_PRIVATE).getAbsolutePath());
-            mqttClientPublisher = new MqttClient(MQTT_SERVER, "clienttest1", mqttClientPersistence);
-            mqttClientPublisher.connect();
-
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void initAsyncClient() {
-        try {
-            mqttAsyncClient = createAsyncClient("clientTest2");
-            mqttAsyncClient.connect();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("Test","  Client Test 2 Error Connect " + e.getMessage(), e );
-        }
 
     }
 
@@ -112,17 +93,6 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
             MqttAsyncClient client = new MqttAsyncClient(MQTT_SERVER, clientId , mqttClientPersistence);
             return client;
     }
-//
-//
-//    @Test
-//    public void testMessageShouldShowOnView() {
-//
-//        for (int i=1;i<=1;i++) {
-//            publishMessage(STRING_TO_BE_TYPED + i);
-//            onView(withId(R.id.messageSubscribeText)).check(matches(withText(STRING_TO_BE_TYPED + i)));
-//        }
-//    }
-
 
     @Test
     public void testPublishMessageAsyncShouldShowOnView() throws InterruptedException {
@@ -137,36 +107,6 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
 
     }
 
-    private MqttCallback createMqttCallBack() {
-        MqttCallback mqttCallback = new MqttCallback() {
-            @Override
-            public void connectionLost(Throwable throwable) {
-
-            }
-
-            @Override
-            public void messageArrived(String s, final MqttMessage mqttMessage) throws Exception {
-                done = true;
-                onView(withId(R.id.messageSubscribeText)).check(matches(withText(STRING_TO_BE_TYPED)));
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-
-            }
-        };
-        return mqttCallback;
-    }
-
-    private void publishMessage(String message) {
-        MqttMessage mqttMessage = new MqttMessage();
-        mqttMessage.setPayload(message.getBytes());
-        try {
-            mqttClientPublisher.publish(MqttActivity.TOPIC, mqttMessage);
-        } catch (MqttException e) {
-            e.printStackTrace();
-        }
-    }
 
     private Observable<String> publishAsyncMessage(final String message) {
         return Observable.create(new Observable.OnSubscribe<String>() {
@@ -210,6 +150,7 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
                                 mqttAsyncClientSignal.subscribe(MqttActivity.TOPIC, 1);
                                 mqttAsyncClientSignal.publish(MqttActivity.TOPIC, mqttMessage);
                             } catch (MqttException e) {
+                                Log.e(LOG_TAG, "Error Publish  " + e.getMessage(), e);
                                 e.printStackTrace();
                             }
                         }
@@ -222,7 +163,7 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
 
 
                 } catch (Exception e) {
-                    Log.e("Test", "Error Connect " + e.getMessage(), e);
+                    Log.e(LOG_TAG, "Error Connect To Server " + e.getMessage(), e);
                     e.printStackTrace();
                 }
             }
@@ -230,26 +171,25 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
 
     }
 
-
     @After
     @Override
-    public void tearDown() throws Exception {
-
-        if (mqttClientPublisher.isConnected()) {
-            mqttClientPublisher.disconnect();
-        }
-
-        if (mqttAsyncClient.isConnected()) {
-            mqttAsyncClient.disconnect();
-        }
-
+    public void tearDown() throws Exception  {
         if (mqttAsyncClientSignal.isConnected()) {
+            Log.i(LOG_TAG, "Disconnect Client");
             mqttAsyncClientSignal.disconnect();
         }
+    }
 
-        if (mqttServer != null) {
-         //   mqttServer.stopServer();
+    @AfterClass
+    public static void tearDownAfterClass() {
+        try {
+            if (mqttServer != null) {
+                Log.i(LOG_TAG, "Stop Server");
+                mqttServer.stopServer();
+            }
+        } catch (RuntimeException e) {
+            Log.e(LOG_TAG, "Tear Down : Stop Server " + e.getMessage(), e);
         }
-        super.tearDown();
+
     }
 }
