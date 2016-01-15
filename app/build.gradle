@@ -20,6 +20,7 @@ android {
     }
 }
 
+
 repositories {
     maven { url 'https://repo.eclipse.org/content/repositories/paho-releases/' }
     mavenCentral()
@@ -43,12 +44,6 @@ dependencies {
     compile "com.jakewharton:butterknife:$rootProject.butterKnifeVersion"
     compile "com.squareup.retrofit:retrofit:$rootProject.retrofitVersion"
 
-    compile project(':broker')
-
-    androidTestCompile 'io.reactivex:rxandroid:1.1.0'
-// Because RxAndroid releases are few and far between, it is recommended you also
-// explicitly depend on RxJava's latest version for bug fixes and new features.
-    androidTestCompile 'io.reactivex:rxjava:1.1.0'
 
 
     // Dependencies for local unit tests
@@ -68,6 +63,14 @@ dependencies {
     androidTestCompile "com.android.support.test.espresso:espresso-core:$rootProject.ext.espressoVersion"
     androidTestCompile "com.android.support.test.espresso:espresso-contrib:$rootProject.ext.espressoVersion"
     androidTestCompile "com.android.support.test.espresso:espresso-intents:$rootProject.ext.espressoVersion"
+
+    androidTestCompile 'io.reactivex:rxandroid:1.1.0'
+// Because RxAndroid releases are few and far between, it is recommended you also
+// explicitly depend on RxJava's latest version for bug fixes and new features.
+    androidTestCompile 'io.reactivex:rxjava:1.1.0'
+
+    androidTestCompile project(':broker')
+
 }
 
 /*

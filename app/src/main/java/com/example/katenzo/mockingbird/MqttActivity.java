@@ -28,7 +28,6 @@ public class MqttActivity extends AppCompatActivity {
     @Bind(R.id.errorTxt)
     TextView errorText;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

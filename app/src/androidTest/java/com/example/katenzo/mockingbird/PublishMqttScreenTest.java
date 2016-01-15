@@ -61,7 +61,7 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
            mqttServer = new Server();
            Log.i(LOG_TAG, "Start Server");
            mqttServer.startServer();
-       } catch (RuntimeException e) {
+       } catch (Exception e) {
            Log.e(LOG_TAG, " Start Server mqtt " + e.getMessage(), e);
        }
     }
@@ -181,13 +181,13 @@ public class PublishMqttScreenTest extends ActivityInstrumentationTestCase2<Mqtt
     }
 
     @AfterClass
-    public static void tearDownAfterClass() {
+    public static void tearDownAfterClass() throws Exception  {
         try {
             if (mqttServer != null) {
                 Log.i(LOG_TAG, "Stop Server");
                 mqttServer.stopServer();
             }
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             Log.e(LOG_TAG, "Tear Down : Stop Server " + e.getMessage(), e);
         }
 
